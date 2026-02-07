@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://hc4gn7bihq7f"]
+
+[ext_resource type="Script" uid="uid://bsp7uh3cww200" path="res://scenes/game.gd" id="1_lnu2h"]
+[ext_resource type="PackedScene" uid="uid://5q7xnu2ye2au" path="res://scenes/player.tscn" id="1_yqjtg"]
+[ext_resource type="PackedScene" uid="uid://66prwuwtp530" path="res://scenes/test.tscn" id="2_lnu2h"]
+
+[node name="Game" type="Control" unique_id=1618377871]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_lnu2h")
+
+[node name="Player" parent="." unique_id=1908666056 instance=ExtResource("1_yqjtg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.7162526, 0)
+
+[node name="test" parent="." unique_id=1941759142 instance=ExtResource("2_lnu2h")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.451107, 0)
+
+[node name="Label" type="Label" parent="." unique_id=2109162379]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 612.0
+offset_right = 105.0
+offset_bottom = 635.0
+text = "hp bar trust"
