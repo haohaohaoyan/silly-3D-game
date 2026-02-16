@@ -6,16 +6,14 @@
 
 [node name="Player" type="CharacterBody3D" unique_id=1908666056]
 script = ExtResource("1_3vyb7")
+default_fov = 95.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1409934121]
 shape = SubResource("CapsuleShape3D_g2els")
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=402863140]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.36338592, 0)
-fov = 95.0
+fov = 96.9
 
 [node name="BufferTimer" type="Timer" parent="." unique_id=965416563]
 wait_time = 0.2
 one_shot = true
-
-[node name="Timer" type="Timer" parent="." unique_id=2003167725]
