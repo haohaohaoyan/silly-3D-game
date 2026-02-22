@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bsp7uh3cww200" path="res://scripts/game.gd" id="1_lnu2h"]
 [ext_resource type="PackedScene" uid="uid://5q7xnu2ye2au" path="res://scenes/player.tscn" id="1_yqjtg"]
+[ext_resource type="PackedScene" uid="uid://ck4qvevkjjpnb" path="res://scenes/pause_screen.tscn" id="2_lbhrr"]
 [ext_resource type="PackedScene" uid="uid://bx0vxfd8rlbjy" path="res://scenes/test_gym_construct.tscn" id="3_lnu2h"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_lnu2h"]
@@ -15,6 +16,15 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_lnu2h")
+
+[node name="Player" parent="." unique_id=1908666056 instance=ExtResource("1_yqjtg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.0307055, 0)
+
+[node name="test_gym_construct" parent="." unique_id=76034593 instance=ExtResource("3_lnu2h")]
+
+[node name="Pause" parent="." unique_id=1088492278 instance=ExtResource("2_lbhrr")]
+z_index = 4096
+layout_mode = 1
 
 [node name="BottomLeftHUD" type="Control" parent="." unique_id=2062230246]
 layout_mode = 1
@@ -39,11 +49,6 @@ text = "hp bar trust"
 layout_mode = 1
 offset_right = 40.0
 offset_bottom = 23.0
-
-[node name="Player" parent="." unique_id=1908666056 instance=ExtResource("1_yqjtg")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.0307055, 0)
-
-[node name="test_gym_construct" parent="." unique_id=76034593 instance=ExtResource("3_lnu2h")]
 
 [node name="Cursor" type="Control" parent="." unique_id=1866568004]
 layout_mode = 1

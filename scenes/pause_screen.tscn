@@ -1,0 +1,48 @@
+[gd_scene format=3 uid="uid://ck4qvevkjjpnb"]
+
+[ext_resource type="Theme" uid="uid://42qyuvb7copb" path="res://assets/pause_ui.tres" id="1_gchx3"]
+
+[node name="PauseScreen" type="Control" unique_id=1088492278]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1166022444]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.52156866)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=294434098]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -48.0
+offset_top = -39.0
+offset_right = 48.0
+offset_bottom = 39.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="resume" type="Button" parent="VBoxContainer" unique_id=1192812471]
+layout_mode = 2
+theme = ExtResource("1_gchx3")
+action_mode = 0
+text = "Unpause"
+
+[node name="quit" type="Button" parent="VBoxContainer" unique_id=179677790]
+layout_mode = 2
+theme = ExtResource("1_gchx3")
+text = "Quit"
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="VBoxContainer" unique_id=1735947431]
+layout_mode = 2

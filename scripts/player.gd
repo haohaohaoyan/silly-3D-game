@@ -37,7 +37,7 @@ func _physics_process(_delta):
 				
 		if get_wall_normal():
 			slide_vector = slide_vector.slide(get_wall_normal())
-		var movement = slide_vector + (transform.basis * direction_input).normalized() * 0.7
+		var movement = slide_vector + (transform.basis * direction_input).normalized() * 0.8
 		velocity.x = movement.x
 		velocity.z = movement.z
 		velocity += -get_wall_normal() * 0.7 # not too sticky so you can look away and bounce off
@@ -67,7 +67,6 @@ func _physics_process(_delta):
 				velocity += (Vector3(slide_vector.x, slide_vector.y + 8, slide_vector.z))
 			else:
 				velocity += ((get_wall_normal() * 16) + (Vector3(slide_vector.x, slide_vector.y + 8, slide_vector.z)))
-				print(slide_vector)
 			$BufferTimer.stop()
 		elif is_on_floor():
 			velocity.y += 16 
@@ -95,23 +94,25 @@ func _physics_process(_delta):
 	# Aesthetic stuff
 	
 	# oooo velocity particles
-	
-	if velocity.length() >= 12:
-		$Camera3D/SlideParticles.emitting = true
-		$Camera3D/SlideParticles.amount = 8 + ((velocity.length()-12))
-		$Camera3D/SlideParticles.mesh.size.z = clampf(velocity.length() / 8, 0, 2)
+	# lowk vertical velocity shouldn't count
+	if Vector2(velocity.x, velocity.z).length() >= 12:
+		$SlideParticles.emitting = true
+		$SlideParticles.amount = lerpf($SlideParticles.amount, 4 + ((velocity.length()-12) / 2), 0.5) # i love interpolating
+		$SlideParticles.draw_pass_1.size.z = clampf(velocity.length() / 16, 0, 1)
+		$SlideParticles.look_at(Vector3(velocity.x + global_position.x, global_position.y, velocity.z + global_position.z), Vector3.UP)
 	else:
-		$Camera3D/SlideParticles.emitting = false
-		
+		$SlideParticles.emitting = false
 	
-	# camera down when slide, tilt cam if on wall
+	# camera down when slide, tilt cam if on wall or sliding in certain direction
 	if slide_state:
 		# $CollisionShape3D.shape.height = 1
 		if is_on_floor():
-			$Camera3D.position.y = -0.3
+			$Camera3D.position.y = lerp($Camera3D.position.y, -0.3, 0.5)
 	else:
 		# $CollisionShape3D.shape.height = 2
-		$Camera3D.position.y = 0.363
+		$Camera3D.position.y = lerp($Camera3D.position.y, 0.363, 0.5)
+		
+	$Camera3D.rotation.z = lerp($Camera3D.rotation.z, -Input.get_axis("STRAFELEFT", "STRAFERIGHT") / (12 * PI), 0.5)
 	
 	move_and_slide()
 	
