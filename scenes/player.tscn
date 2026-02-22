@@ -4,6 +4,14 @@
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_g2els"]
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3vyb7"]
+transparency = 1
+albedo_color = Color(1, 1, 1, 0.5058824)
+
+[sub_resource type="BoxMesh" id="BoxMesh_3vyb7"]
+material = SubResource("StandardMaterial3D_3vyb7")
+size = Vector3(0.03, 0.03, 1)
+
 [node name="Player" type="CharacterBody3D" unique_id=1908666056]
 script = ExtResource("1_3vyb7")
 
@@ -13,6 +21,23 @@ shape = SubResource("CapsuleShape3D_g2els")
 [node name="Camera3D" type="Camera3D" parent="." unique_id=402863140]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.36338592, 0)
 fov = 95.0
+
+[node name="SlideParticles" type="CPUParticles3D" parent="Camera3D" unique_id=1684329452]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.41071635)
+lifetime = 2.0
+explosiveness = 0.23
+randomness = 0.5
+fixed_fps = 30
+visibility_aabb = AABB(-1, -1, -1, 2, 2, 2)
+mesh = SubResource("BoxMesh_3vyb7")
+emission_shape = 6
+emission_ring_axis = Vector3(0, 0, 1)
+emission_ring_height = 1.0
+emission_ring_radius = 1.5
+emission_ring_inner_radius = 0.8
+emission_ring_cone_angle = 90.0
+gravity = Vector3(0, 0, 0)
+color = Color(0.52, 0.52, 0.52, 0.38039216)
 
 [node name="BufferTimer" type="Timer" parent="." unique_id=965416563]
 wait_time = 0.2
