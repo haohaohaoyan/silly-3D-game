@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://5q7xnu2ye2au" path="res://scenes/player.tscn" id="1_yqjtg"]
 [ext_resource type="PackedScene" uid="uid://ck4qvevkjjpnb" path="res://scenes/pause_screen.tscn" id="2_lbhrr"]
 [ext_resource type="PackedScene" uid="uid://bx0vxfd8rlbjy" path="res://scenes/test_gym_construct.tscn" id="3_lnu2h"]
+[ext_resource type="Theme" uid="uid://42qyuvb7copb" path="res://assets/pause_ui.tres" id="5_iywne"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_lnu2h"]
 load_path = "res://.godot/imported/cursor.png-224f93d013e0812359a323dac1948615.ctex"
@@ -35,20 +36,15 @@ offset_top = -40.0
 offset_right = 40.0
 grow_vertical = 0
 
-[node name="Label" type="Label" parent="BottomLeftHUD" unique_id=2109162379]
+[node name="Speedometer" type="Label" parent="BottomLeftHUD" unique_id=1858740289]
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_top = -23.0
-offset_right = 93.0
-grow_vertical = 0
-text = "hp bar trust"
-
-[node name="Speedometer" type="Label" parent="BottomLeftHUD" unique_id=1858740289]
-layout_mode = 1
+offset_top = -30.0
 offset_right = 40.0
-offset_bottom = 23.0
+grow_vertical = 0
+theme = ExtResource("5_iywne")
 
 [node name="Cursor" type="Control" parent="." unique_id=1866568004]
 layout_mode = 1

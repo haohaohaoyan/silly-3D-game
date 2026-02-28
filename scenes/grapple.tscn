@@ -1,3 +1,19 @@
 [gd_scene format=3 uid="uid://w33qk4ccmftp"]
 
-[node name="Grapple" type="Node3D" unique_id=1733604163]
+[sub_resource type="SphereShape3D" id="SphereShape3D_iiyu8"]
+radius = 0.3
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_iiyu8"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_d3daa"]
+material = SubResource("StandardMaterial3D_iiyu8")
+radius = 0.3
+height = 0.6
+
+[node name="Grapple" type="CharacterBody3D" unique_id=1337583611]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=246058021]
+shape = SubResource("SphereShape3D_iiyu8")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=622388405]
+mesh = SubResource("SphereMesh_d3daa")

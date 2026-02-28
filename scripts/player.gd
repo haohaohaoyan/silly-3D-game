@@ -12,6 +12,10 @@ var slide_state
 var last_movement_state: Dictionary
 var slide_vector
 
+var current_grapple # for keeping track of the out grapple
+
+@onready var grapple = preload("res://scenes/grapple.tscn")
+
 func _physics_process(_delta):
 	var direction_input = Vector3(Input.get_axis("STRAFELEFT", "STRAFERIGHT"), 0, Input.get_axis("FORWARD", "BACK")).normalized()
 	
@@ -40,7 +44,7 @@ func _physics_process(_delta):
 		var movement = slide_vector + (transform.basis * direction_input).normalized() * 0.8
 		velocity.x = movement.x
 		velocity.z = movement.z
-		velocity += -get_wall_normal() * 0.7 # not too sticky so you can look away and bounce off
+		velocity += -get_wall_normal() * 0.6 # not too sticky so you can look away and bounce off
 	else:
 		# reset slide vector 
 		var movement = (transform.basis * direction_input).normalized() * SPEED
@@ -64,9 +68,9 @@ func _physics_process(_delta):
 		if slide_state:
 			# Floor priority first in case you're touching both a floor and a wall
 			if is_on_floor():
-				velocity += (Vector3(slide_vector.x, slide_vector.y + 8, slide_vector.z))
+				velocity += (Vector3((slide_vector.normalized() * 8).x, slide_vector.y + 8, (slide_vector.normalized() * 8).z))
 			else:
-				velocity += ((get_wall_normal() * 16) + (Vector3(slide_vector.x, slide_vector.y + 8, slide_vector.z)))
+				velocity += ((get_wall_normal() * 16) + (Vector3((slide_vector.normalized() * 8).x, slide_vector.y + 8, (slide_vector.normalized() * 8).z)))
 			$BufferTimer.stop()
 		elif is_on_floor():
 			velocity.y += 16 
@@ -89,16 +93,16 @@ func _physics_process(_delta):
 			last_movement_state["slide_state"] = false
 		
 	# after movement, process the grapple thingamabobber
-	
-	# check for throw grapple command
+	grapple_control()
+		
 	# Aesthetic stuff
 	
 	# oooo velocity particles
 	# lowk vertical velocity shouldn't count
 	if Vector2(velocity.x, velocity.z).length() >= 12:
 		$SlideParticles.emitting = true
-		$SlideParticles.amount = lerpf($SlideParticles.amount, 4 + ((velocity.length()-12) / 2), 0.5) # i love interpolating
-		$SlideParticles.draw_pass_1.size.z = clampf(velocity.length() / 16, 0, 1)
+		$SlideParticles.amount = lerpf($SlideParticles.amount, 4 + ((velocity.length()-12) / 4), 0.5) # i love interpolating
+		$SlideParticles.draw_pass_1.size.z = clampf(velocity.length() / 16, 0, 3)
 		$SlideParticles.look_at(Vector3(velocity.x + global_position.x, global_position.y, velocity.z + global_position.z), Vector3.UP)
 	else:
 		$SlideParticles.emitting = false
@@ -117,6 +121,26 @@ func _physics_process(_delta):
 	move_and_slide()
 	
 func update_camera():
-	var movement = Input.get_last_mouse_velocity() # local var
+	var movement = Input.get_last_mouse_velocity() # local var nyehehehe
 	rotate_y(-movement.x * SENSITIVITY)
 	$Camera3D.rotation.x = clampf($Camera3D.rotation.x + -movement.y * SENSITIVITY, -PI/2, PI/2) # for some reason it defaults to rad??
+	
+func grapple_control():
+	# check for throw grapple command
+	if Input.is_action_just_pressed("HOOK"):
+		if current_grapple:
+			current_grapple.queue_free()
+		var new_grapple = grapple.instantiate()
+		add_sibling(new_grapple)
+		current_grapple = new_grapple
+		current_grapple.global_position = global_position + Vector3(0,0.37,0) + (Vector3(0,0,-1) * $Camera3D.transform.basis)
+		current_grapple.global_rotation = global_rotation
+		current_grapple.velocity = $Camera3D.global_transform.basis * Vector3(0,0,-40)
+		# current_grapple.
+	
+	if current_grapple:
+		if current_grapple.move_and_slide():
+			current_grapple.velocity = Vector3(0,0,0)
+		if current_grapple.velocity == Vector3(0,0,0):
+			velocity -= (global_position - current_grapple.global_position).normalized() * 8
+	
