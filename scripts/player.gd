@@ -5,16 +5,14 @@ const SPEED = 8
 const GRAVITY_MAX = -32
 const GRAVITY_SPEED = 0.5
 const SENSITIVITY = 0.00007 # what in the name of
-const AIR_ACCEL = 0.5
+const AIR_ACCEL = 0.2
 const AIR_FRICTION = 0.1
 
 var slide_state 
 var last_movement_state: Dictionary
 var slide_vector
 
-var current_grapple # for keeping track of the out grapple
-
-@onready var grapple = preload("res://scenes/grapple.tscn")
+@onready var grapple = owner.get_node("Grapple")
 
 func _physics_process(_delta):
 	var direction_input = Vector3(Input.get_axis("STRAFELEFT", "STRAFERIGHT"), 0, Input.get_axis("FORWARD", "BACK")).normalized()
@@ -52,9 +50,9 @@ func _physics_process(_delta):
 			velocity.x = movement.x
 			velocity.z = movement.z
 		else:
-			if movement and velocity.length() <= SPEED:
-				velocity.x = move_toward(velocity.x, movement.x, AIR_ACCEL)
-				velocity.z = move_toward(velocity.z, movement.z, AIR_ACCEL)
+			if movement:
+				velocity.x = move_toward(velocity.x, velocity.x + movement.x * 2, AIR_ACCEL)
+				velocity.z = move_toward(velocity.z, velocity.x + movement.z * 2, AIR_ACCEL)
 			else:
 				velocity.x = move_toward(velocity.x, 0, AIR_FRICTION)
 				velocity.z = move_toward(velocity.z, 0, AIR_FRICTION)
@@ -68,7 +66,7 @@ func _physics_process(_delta):
 		if slide_state:
 			# Floor priority first in case you're touching both a floor and a wall
 			if is_on_floor():
-				velocity += (Vector3((slide_vector.normalized() * 8).x, slide_vector.y + 8, (slide_vector.normalized() * 8).z))
+				velocity += (Vector3((slide_vector.normalized() * 8).x, slide_vector.y + 12, (slide_vector.normalized() * 8).z))
 			else:
 				velocity += ((get_wall_normal() * 16) + (Vector3((slide_vector.normalized() * 8).x, slide_vector.y + 8, (slide_vector.normalized() * 8).z)))
 			$BufferTimer.stop()
@@ -108,16 +106,23 @@ func _physics_process(_delta):
 		$SlideParticles.emitting = false
 	
 	# camera down when slide, tilt cam if on wall or sliding in certain direction
+	# height is broken until i change some stuff
+	$Camera3D.rotation.z = lerp($Camera3D.rotation.z, -Input.get_axis("STRAFELEFT", "STRAFERIGHT") * (0.03 + (int(slide_state) * 0.07) * int(is_on_floor())), 0.5)
+	
 	if slide_state:
 		# $CollisionShape3D.shape.height = 1
 		if is_on_floor():
 			$Camera3D.position.y = lerp($Camera3D.position.y, -0.3, 0.5)
+		else:
+			if is_on_wall():
+				$Camera3D.rotation.z += lerp($Camera3D.rotation.z, float(int($RayCast3DRight.is_colliding()) - int($RayCast3DLeft.is_colliding())) / (PI * 6), 0.3)
 	else:
 		# $CollisionShape3D.shape.height = 2
-		$Camera3D.position.y = lerp($Camera3D.position.y, 0.363, 0.5)
-		
-	$Camera3D.rotation.z = lerp($Camera3D.rotation.z, -Input.get_axis("STRAFELEFT", "STRAFERIGHT") / (12 * PI), 0.5)
+		$Camera3D.position.y = lerp($Camera3D.position.y, 0.733, 0.5)
 	
+	# Audio
+	$AudioManager.audio_loop()
+
 	move_and_slide()
 	
 func update_camera():
@@ -128,19 +133,8 @@ func update_camera():
 func grapple_control():
 	# check for throw grapple command
 	if Input.is_action_just_pressed("HOOK"):
-		if current_grapple:
-			current_grapple.queue_free()
-		var new_grapple = grapple.instantiate()
-		add_sibling(new_grapple)
-		current_grapple = new_grapple
-		current_grapple.global_position = global_position + Vector3(0,0.37,0) + (Vector3(0,0,-1) * $Camera3D.transform.basis)
-		current_grapple.global_rotation = global_rotation
-		current_grapple.velocity = $Camera3D.global_transform.basis * Vector3(0,0,-40)
-		# current_grapple.
-	
-	if current_grapple:
-		if current_grapple.move_and_slide():
-			current_grapple.velocity = Vector3(0,0,0)
-		if current_grapple.velocity == Vector3(0,0,0):
-			velocity -= (global_position - current_grapple.global_position).normalized() * 8
-	
+		grapple.set_physics_process(true)
+		grapple.visible = true
+		grapple.global_rotation = $Camera3D.global_rotation
+		grapple.global_position = global_position + Vector3(0,0.733,0) + (Vector3(0,0,0) * $Camera3D.global_transform.basis)
+		grapple.velocity = $Camera3D.global_transform.basis * Vector3(0,0,-128)

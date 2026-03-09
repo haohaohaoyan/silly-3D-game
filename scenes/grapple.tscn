@@ -1,19 +1,33 @@
 [gd_scene format=3 uid="uid://w33qk4ccmftp"]
 
+[ext_resource type="Script" uid="uid://dqfhdbmkbh0sg" path="res://grapple.gd" id="1_d3daa"]
+[ext_resource type="ArrayMesh" uid="uid://bxhvkfexetf57" path="res://assets/grapple.obj" id="2_ef51w"]
+
 [sub_resource type="SphereShape3D" id="SphereShape3D_iiyu8"]
 radius = 0.3
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_iiyu8"]
-
-[sub_resource type="SphereMesh" id="SphereMesh_d3daa"]
-material = SubResource("StandardMaterial3D_iiyu8")
-radius = 0.3
-height = 0.6
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ef51w"]
+albedo_color = Color(0.39308554, 0.39308554, 0.39308533, 1)
+metallic = 0.5
+roughness = 0.8
 
 [node name="Grapple" type="CharacterBody3D" unique_id=1337583611]
+collision_layer = 0
+script = ExtResource("1_d3daa")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=246058021]
 shape = SubResource("SphereShape3D_iiyu8")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=622388405]
-mesh = SubResource("SphereMesh_d3daa")
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=140568409]
+mesh = ExtResource("2_ef51w")
+surface_material_override/0 = SubResource("StandardMaterial3D_ef51w")
+
+[node name="WirePositionEnd" type="Node3D" parent="." unique_id=1958638581]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.21866733)
+
+[node name="RemoveCheck" type="Area3D" parent="." unique_id=1298363394]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RemoveCheck" unique_id=607788481]
+shape = SubResource("SphereShape3D_iiyu8")
+
+[connection signal="body_entered" from="RemoveCheck" to="." method="_on_die"]

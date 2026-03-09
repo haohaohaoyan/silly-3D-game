@@ -1,18 +1,6 @@
 [gd_resource type="Theme" format=3 uid="uid://42qyuvb7copb"]
 
-[ext_resource type="FontFile" uid="uid://dc7mc3rslmftf" path="res://assets/Aileron-Heavy.otf" id="1_ie8vl"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ie8vl"]
-content_margin_left = 4.0
-content_margin_top = 4.0
-content_margin_right = 4.0
-content_margin_bottom = 4.0
-bg_color = Color(0.1, 0.1, 0.1, 0.3)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
-corner_detail = 5
+[ext_resource type="FontFile" uid="uid://dyfpgills23pp" path="res://assets/CourierPrime-Bold.ttf" id="1_ie8vl"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r467l"]
 content_margin_left = 4.0
@@ -35,8 +23,15 @@ expand_margin_top = 2.0
 expand_margin_right = 2.0
 expand_margin_bottom = 2.0
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_meq7i"]
-bg_color = Color(0.47, 0.47, 0.47, 0)
+[sub_resource type="Gradient" id="Gradient_ie8vl"]
+offsets = PackedFloat32Array(0, 0.1, 0.5251397, 0.9, 1)
+colors = PackedColorArray(0, 0, 0, 0, 0.45882353, 0.45882353, 0.45882353, 0.6039216, 0.45882353, 0.45882353, 0.45882353, 1, 0.46, 0.46, 0.46, 0.6039216, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_meq7i"]
+gradient = SubResource("Gradient_ie8vl")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ie8vl"]
+texture = SubResource("GradientTexture1D_meq7i")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_npf1u"]
 content_margin_left = 5.0
@@ -45,28 +40,24 @@ content_margin_right = 5.0
 content_margin_bottom = 5.0
 bg_color = Color(0.6, 0.6, 0.6, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pl56a"]
-content_margin_left = 4.0
-content_margin_top = 4.0
-content_margin_right = 4.0
-content_margin_bottom = 4.0
-bg_color = Color(0, 0, 0, 0)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
-corner_detail = 5
+[sub_resource type="Gradient" id="Gradient_npf1u"]
+offsets = PackedFloat32Array(0, 0.1, 0.5, 0.9, 1)
+colors = PackedColorArray(1, 1, 1, 0, 0.6117647, 0.6117647, 0.6117647, 0.6039216, 0.6117647, 0.6117647, 0.6117647, 1, 0.6117647, 0.6117647, 0.6117647, 0.6039216, 1, 1, 1, 0)
+metadata/_snap_enabled = true
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_r467l"]
+gradient = SubResource("Gradient_npf1u")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_pl56a"]
+texture = SubResource("GradientTexture1D_r467l")
 
 [resource]
 Button/colors/font_color = Color(1, 1, 1, 1)
-Button/constants/outline_size = 3
 Button/font_sizes/font_size = 20
 Button/fonts/font = ExtResource("1_ie8vl")
-Button/styles/disabled = SubResource("StyleBoxFlat_ie8vl")
 Button/styles/focus = SubResource("StyleBoxFlat_r467l")
-Button/styles/hover = SubResource("StyleBoxFlat_meq7i")
+Button/styles/hover = SubResource("StyleBoxTexture_ie8vl")
 Button/styles/normal = SubResource("StyleBoxFlat_npf1u")
-Button/styles/pressed = SubResource("StyleBoxFlat_pl56a")
-Label/constants/outline_size = 3
+Button/styles/pressed = SubResource("StyleBoxTexture_pl56a")
 Label/font_sizes/font_size = 24
 Label/fonts/font = ExtResource("1_ie8vl")

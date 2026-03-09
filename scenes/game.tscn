@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://5q7xnu2ye2au" path="res://scenes/player.tscn" id="1_yqjtg"]
 [ext_resource type="PackedScene" uid="uid://ck4qvevkjjpnb" path="res://scenes/pause_screen.tscn" id="2_lbhrr"]
 [ext_resource type="PackedScene" uid="uid://bx0vxfd8rlbjy" path="res://scenes/test_gym_construct.tscn" id="3_lnu2h"]
+[ext_resource type="PackedScene" uid="uid://w33qk4ccmftp" path="res://scenes/grapple.tscn" id="3_p57ef"]
 [ext_resource type="Theme" uid="uid://42qyuvb7copb" path="res://assets/pause_ui.tres" id="5_iywne"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_lnu2h"]
@@ -21,13 +22,18 @@ script = ExtResource("1_lnu2h")
 [node name="Player" parent="." unique_id=1908666056 instance=ExtResource("1_yqjtg")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.0307055, 0)
 
-[node name="test_gym_construct" parent="." unique_id=76034593 instance=ExtResource("3_lnu2h")]
+[node name="Grapple" parent="." unique_id=1337583611 instance=ExtResource("3_p57ef")]
+
+[node name="current_level" type="Node" parent="." unique_id=430740197]
+
+[node name="test_gym_construct" parent="current_level" unique_id=76034593 instance=ExtResource("3_lnu2h")]
 
 [node name="Pause" parent="." unique_id=1088492278 instance=ExtResource("2_lbhrr")]
+visible = false
 z_index = 4096
 layout_mode = 1
 
-[node name="BottomLeftHUD" type="Control" parent="." unique_id=2062230246]
+[node name="BottomLeftHUD" type="MarginContainer" parent="." unique_id=653862704]
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
@@ -35,15 +41,13 @@ anchor_bottom = 1.0
 offset_top = -40.0
 offset_right = 40.0
 grow_vertical = 0
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
 
 [node name="Speedometer" type="Label" parent="BottomLeftHUD" unique_id=1858740289]
-layout_mode = 1
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_top = -30.0
-offset_right = 40.0
-grow_vertical = 0
+layout_mode = 2
 theme = ExtResource("5_iywne")
 
 [node name="Cursor" type="Control" parent="." unique_id=1866568004]
