@@ -1,0 +1,147 @@
+[gd_scene format=3 uid="uid://ddrtnm66xeq8y"]
+
+[ext_resource type="Script" uid="uid://bktauec1ieaa8" path="res://scripts/title_screen.gd" id="1_fgkus"]
+[ext_resource type="Theme" uid="uid://42qyuvb7copb" path="res://assets/pause_ui.tres" id="2_sa3yf"]
+[ext_resource type="Texture2D" uid="uid://c2o2nff6mxio2" path="res://assets/logo.png" id="3_s4lrb"]
+[ext_resource type="PackedScene" uid="uid://eklgfy4snsee" path="res://scenes/level_card.tscn" id="4_mgrm8"]
+
+[sub_resource type="Gradient" id="Gradient_sa3yf"]
+colors = PackedColorArray(0.28485027, 0.28485027, 0.28485027, 1, 0.080783345, 0.080783345, 0.080783345, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_s4lrb"]
+gradient = SubResource("Gradient_sa3yf")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_mgrm8"]
+texture = SubResource("GradientTexture1D_s4lrb")
+
+[sub_resource type="Theme" id="Theme_s4lrb"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s4lrb"]
+bg_color = Color(0.22352941, 0.22352941, 0.22352941, 1)
+
+[node name="TitleScreen" type="Control" unique_id=1685280578]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_fgkus")
+
+[node name="Panel" type="Panel" parent="." unique_id=149440912]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_mgrm8")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=509279499]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 15
+
+[node name="Control" type="Control" parent="MarginContainer" unique_id=1485461689]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+mouse_filter = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/Control" unique_id=2145404922]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -259.5
+offset_top = -51.0
+offset_right = 259.5
+offset_bottom = 51.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_sa3yf")
+
+[node name="Logo" type="TextureRect" parent="MarginContainer/Control/VBoxContainer" unique_id=1240505846]
+texture_filter = 2
+custom_minimum_size = Vector2(0, 72)
+layout_mode = 2
+size_flags_vertical = 3
+texture = ExtResource("3_s4lrb")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="PlayButton" type="Button" parent="MarginContainer/Control/VBoxContainer" unique_id=880882351]
+layout_mode = 2
+text = "Play"
+
+[node name="QuitButton" type="Button" parent="MarginContainer/Control/VBoxContainer" unique_id=611121790]
+layout_mode = 2
+size_flags_vertical = 8
+theme = SubResource("Theme_s4lrb")
+text = "Quit"
+
+[node name="LevelSelect" type="Control" parent="." unique_id=86710342]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="Panel" parent="LevelSelect" unique_id=1493535020]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_s4lrb")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="LevelSelect" unique_id=1836881551]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_scroll_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="LevelSelect/ScrollContainer" unique_id=131821805]
+custom_minimum_size = Vector2(0, 648)
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="LevelCard" parent="LevelSelect/ScrollContainer/HBoxContainer" unique_id=818107600 instance=ExtResource("4_mgrm8")]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+levelName = "Test Gym"
+levelFirstPath = "res://assets/levels/test_gym/test_gym_construct.tscn"
+levelThumbnail = "res://assets/levels/test_gym/test_gym_thumbnail.png"
+
+[node name="LevelCard2" parent="LevelSelect/ScrollContainer/HBoxContainer" unique_id=512828495 instance=ExtResource("4_mgrm8")]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+levelName = "level 1"
+levelFirstPath = "res://assets/levels/ch1/ch1_1.tscn"
+levelThumbnail = "res://icon.svg"
+
+[node name="Button" type="Button" parent="LevelSelect" unique_id=1035142041]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 31.0
+grow_horizontal = 2
+theme = ExtResource("2_sa3yf")
+text = "Back"

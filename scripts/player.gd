@@ -8,11 +8,17 @@ const SENSITIVITY = 0.00007 # what in the name of
 const AIR_ACCEL = 0.2
 const AIR_FRICTION = 0.1
 
-var slide_state 
+var slide_state : bool
 var last_movement_state: Dictionary
-var slide_vector
+var slide_vector : Vector3
+var air_movement_vector: Vector3 # horizontal only, but y included for compatibility
+var grapple_vector: Vector3
+
+var respawn_checkpoint : Vector3 = Vector3(0,0,0)
+signal checkpoint_reached
 
 @onready var grapple = owner.get_node("Grapple")
+@onready var line = owner.get_node("Line")
 
 func _physics_process(_delta):
 	var direction_input = Vector3(Input.get_axis("STRAFELEFT", "STRAFERIGHT"), 0, Input.get_axis("FORWARD", "BACK")).normalized()
@@ -30,15 +36,17 @@ func _physics_process(_delta):
 	if slide_state:
 		if Input.is_action_just_pressed("SLIDE") or !last_movement_state["slide_state"]:
 			if direction_input:
-				if velocity.length() >= 12:
+				if velocity.length() >= SPEED * 1.5:
 					slide_vector = transform.basis * (direction_input * velocity.length())
 				else:
 					slide_vector = (transform.basis * direction_input) * SPEED * 1.5
 			else:
-				slide_vector = (transform.basis * Vector3(0,0,-1)).normalized() * SPEED * 1.5
-				
+				if velocity.length() >= SPEED * 1.5:
+					slide_vector = (transform.basis * Vector3(0,0,-1)).normalized() * velocity.length()
+				else:
+					slide_vector = (transform.basis * Vector3(0,0,-1)).normalized() * SPEED * 1.5
 		if get_wall_normal():
-			slide_vector = slide_vector.slide(get_wall_normal())
+			slide_vector = slide_vector.slide(get_wall_normal()) * Vector3(1, 0.98, 1)
 		var movement = slide_vector + (transform.basis * direction_input).normalized() * 0.8
 		velocity.x = movement.x
 		velocity.z = movement.z
@@ -46,13 +54,20 @@ func _physics_process(_delta):
 	else:
 		# reset slide vector 
 		var movement = (transform.basis * direction_input).normalized() * SPEED
-		if is_on_floor():
+		if is_on_floor() and !grapple.is_hooked:
+			air_movement_vector = Vector3(0,0,0)
 			velocity.x = movement.x
 			velocity.z = movement.z
 		else:
 			if movement:
-				velocity.x = move_toward(velocity.x, velocity.x + movement.x * 2, AIR_ACCEL)
-				velocity.z = move_toward(velocity.z, velocity.x + movement.z * 2, AIR_ACCEL)
+				# change movement, lerp, add back to split up
+				velocity -= air_movement_vector
+				if Vector2(velocity.x, velocity.z).length() >= SPEED:
+					air_movement_vector = (transform.basis * Vector3(0,0,direction_input.x * SPEED))
+				else:
+					air_movement_vector.x = move_toward(air_movement_vector.x, movement.x, AIR_ACCEL)
+					air_movement_vector.z = move_toward(air_movement_vector.z, movement.z, AIR_ACCEL)
+				velocity += air_movement_vector
 			else:
 				velocity.x = move_toward(velocity.x, 0, AIR_FRICTION)
 				velocity.z = move_toward(velocity.z, 0, AIR_FRICTION)
@@ -65,22 +80,26 @@ func _physics_process(_delta):
 	if !$BufferTimer.is_stopped():
 		if slide_state:
 			# Floor priority first in case you're touching both a floor and a wall
+			var converted_slide_vector = (slide_vector.normalized() * 8)
 			if is_on_floor():
-				velocity += (Vector3((slide_vector.normalized() * 8).x, slide_vector.y + 12, (slide_vector.normalized() * 8).z))
+				velocity += (Vector3(converted_slide_vector.x, slide_vector.y + 12, converted_slide_vector.z))
 			else:
-				velocity += ((get_wall_normal() * 16) + (Vector3((slide_vector.normalized() * 8).x, slide_vector.y + 8, (slide_vector.normalized() * 8).z)))
+				velocity += ((get_wall_normal() * 16) + (Vector3(converted_slide_vector.x, slide_vector.y + 8, converted_slide_vector.z)))
 			$BufferTimer.stop()
 		elif is_on_floor():
 			velocity.y += 16 
 			$BufferTimer.stop()
 			
 	# Gravity
-	if !is_on_floor():
-		if slide_state:
-			velocity.y = move_toward(velocity.y,0, 1)
-		else:
-			velocity.y = move_toward(velocity.y, GRAVITY_MAX, GRAVITY_SPEED)
-			
+	if !is_on_floor() and !grapple.is_hooked and slide_state == false:
+		velocity.y = move_toward(velocity.y, GRAVITY_MAX, GRAVITY_SPEED)
+		
+	# Checkpoints are checked asynchronously
+	
+	# Check for death-related things
+	if len($DeathCollision.get_overlapping_areas()) > 0 or len($DeathCollision.get_overlapping_bodies()) > 0:
+		death()
+	
 	# set last movement (fancy dict)
 	if is_on_wall():
 		last_movement_state = {"slide_state": true, "wall_normal": get_wall_normal()}
@@ -92,18 +111,17 @@ func _physics_process(_delta):
 		
 	# after movement, process the grapple thingamabobber
 	grapple_control()
-		
 	# Aesthetic stuff
 	
 	# oooo velocity particles
 	# lowk vertical velocity shouldn't count
 	if Vector2(velocity.x, velocity.z).length() >= 12:
-		$SlideParticles.emitting = true
-		$SlideParticles.amount = lerpf($SlideParticles.amount, 4 + ((velocity.length()-12) / 4), 0.5) # i love interpolating
-		$SlideParticles.draw_pass_1.size.z = clampf(velocity.length() / 16, 0, 3)
-		$SlideParticles.look_at(Vector3(velocity.x + global_position.x, global_position.y, velocity.z + global_position.z), Vector3.UP)
+		$VelocityParticles.emitting = true
+		$VelocityParticles.amount = lerpf($VelocityParticles.amount, 4 + ((velocity.length()-12) / 4), 0.5) # i love interpolating
+		$VelocityParticles.draw_pass_1.size.z = clampf(velocity.length() / 16, 0, 3)
+		$VelocityParticles.look_at(Vector3(velocity.x + global_position.x, global_position.y, velocity.z + global_position.z), Vector3.UP)
 	else:
-		$SlideParticles.emitting = false
+		$VelocityParticles.emitting = false
 	
 	# camera down when slide, tilt cam if on wall or sliding in certain direction
 	# height is broken until i change some stuff
@@ -133,8 +151,40 @@ func update_camera():
 func grapple_control():
 	# check for throw grapple command
 	if Input.is_action_just_pressed("HOOK"):
-		grapple.set_physics_process(true)
-		grapple.visible = true
-		grapple.global_rotation = $Camera3D.global_rotation
-		grapple.global_position = global_position + Vector3(0,0.733,0) + (Vector3(0,0,0) * $Camera3D.global_transform.basis)
-		grapple.velocity = $Camera3D.global_transform.basis * Vector3(0,0,-128)
+		grapple.is_hooked = false
+		if !grapple.visible:
+			grapple_vector = Vector3(0,0,0)
+			grapple.visible = true
+			grapple.global_rotation = $Camera3D.global_rotation
+			grapple.global_position = global_position + Vector3(0,0.733,0) + (Vector3(0,0,0) * $Camera3D.global_transform.basis)
+			grapple.velocity = $Camera3D.global_transform.basis * Vector3(0,0,-128)
+			line.visible = true
+		else:
+			grapple.visible = false
+		
+	if grapple.visible:
+		line.mesh.size.z = abs(($Camera3D/WirePositionEnd.global_position - grapple.get_node("WirePositionEnd").global_position).length())
+		line.global_position = lerp($Camera3D/WirePositionEnd.global_position, grapple.get_node("WirePositionEnd").global_position, 0.5)
+		line.look_at(grapple.get_node("WirePositionEnd").global_position)
+		if grapple.is_hooked:
+			if velocity.length() >= grapple_vector.length():
+				velocity -= grapple_vector
+			grapple_vector = (grapple.global_position - global_position).normalized() * 30
+			slide_vector = grapple_vector
+			velocity += grapple_vector
+		if grapple.global_position.distance_to(global_position) >= 60:
+			grapple.die()
+	else:
+		line.visible = false
+		
+func death():
+	global_position = respawn_checkpoint
+	grapple.global_position = global_position
+	grapple.is_hooked = false
+	grapple.visible = false
+	velocity = Vector3(0,0,0)
+		
+func _on_checkpoint(area) -> void:
+	if respawn_checkpoint != area.global_position:
+		respawn_checkpoint = area.global_position
+		checkpoint_reached.emit()

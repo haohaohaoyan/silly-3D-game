@@ -1,6 +1,15 @@
 [gd_scene format=3 uid="uid://ck4qvevkjjpnb"]
 
 [ext_resource type="Theme" uid="uid://42qyuvb7copb" path="res://assets/pause_ui.tres" id="1_gchx3"]
+[ext_resource type="Script" uid="uid://bqf41dduipxak" path="res://scripts/pause_screen.gd" id="1_qeunj"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gchx3"]
+bg_color = Color(0.2231029, 0.2231029, 0.22310278, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.13682574, 0.13682577, 0.13682562, 1)
 
 [node name="PauseScreen" type="Control" unique_id=1088492278]
 layout_mode = 3
@@ -9,11 +18,15 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_qeunj")
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=1166022444]
-layout_mode = 0
-offset_right = 1152.0
-offset_bottom = 648.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 color = Color(0, 0, 0, 0.52156866)
 
 [node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=294434098]
@@ -33,14 +46,76 @@ theme = ExtResource("1_gchx3")
 action_mode = 0
 text = "Unpause"
 
-[node name="options" type="MenuButton" parent="VBoxContainer" unique_id=1333878944]
+[node name="retry" type="Button" parent="VBoxContainer" unique_id=940829422]
+layout_mode = 2
+theme = ExtResource("1_gchx3")
+text = "Restart at Last Checkpoint"
+
+[node name="options" type="Button" parent="VBoxContainer" unique_id=1234467694]
 layout_mode = 2
 theme = ExtResource("1_gchx3")
 text = "Options"
-item_count = 1
-popup/item_0/id = 0
 
 [node name="quit" type="Button" parent="VBoxContainer" unique_id=179677790]
 layout_mode = 2
 theme = ExtResource("1_gchx3")
 text = "Quit"
+
+[node name="OptionsMenu" type="Control" parent="." unique_id=464668447]
+visible = false
+custom_minimum_size = Vector2(500, 500)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_gchx3")
+
+[node name="Panel" type="Panel" parent="OptionsMenu" unique_id=1215153164]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_gchx3")
+
+[node name="MarginContainer" type="MarginContainer" parent="OptionsMenu" unique_id=749780984]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="ScrollContainer" type="ScrollContainer" parent="OptionsMenu/MarginContainer" unique_id=833531644]
+layout_mode = 2
+vertical_scroll_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="OptionsMenu/MarginContainer/ScrollContainer" unique_id=661996099]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="OptionsMenu/MarginContainer/ScrollContainer/VBoxContainer" unique_id=1729091140]
+layout_mode = 2
+text = "SFX Volume"
+
+[node name="SFXVolSlider" type="HSlider" parent="OptionsMenu/MarginContainer/ScrollContainer/VBoxContainer" unique_id=752849808]
+layout_mode = 2
+max_value = 1.0
+step = 0.01
+
+[node name="OptionsBackButton" type="Button" parent="OptionsMenu/MarginContainer" unique_id=492943706]
+layout_mode = 2
+size_flags_vertical = 8
+text = "Back"

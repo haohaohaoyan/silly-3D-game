@@ -11,9 +11,13 @@ config_version=5
 [application]
 
 config/name="silly3dgame"
-run/main_scene="uid://hc4gn7bihq7f"
+run/main_scene="uid://ddrtnm66xeq8y"
 config/features=PackedStringArray("4.6", "GL Compatibility")
 config/icon="res://icon.svg"
+
+[autoload]
+
+Options="*uid://l1gr38akukjx"
 
 [editor_plugins]
 

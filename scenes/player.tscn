@@ -4,18 +4,9 @@
 [ext_resource type="AudioStream" uid="uid://bdowavd4q46mn" path="res://assets/audio/slide_loop.wav" id="2_g2els"]
 [ext_resource type="Script" uid="uid://1o5xpwj5ceny" path="res://scripts/audio_manager.gd" id="2_qhqgy"]
 [ext_resource type="AudioStream" uid="uid://dh6ybeyddogtv" path="res://assets/audio/361053__jorge0000__wind-noise.wav" id="3_dqkch"]
+[ext_resource type="AudioStream" uid="uid://dn4l25h641uym" path="res://assets/audio/hook_loop.wav" id="5_qlg0r"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_g2els"]
-
-[sub_resource type="Curve3D" id="Curve3D_dqkch"]
-_data = {
-"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0.16967171, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-"tilts": PackedFloat32Array(0, 0)
-}
-point_count = 2
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qlg0r"]
-albedo_color = Color(0.19793725, 0.19793722, 0.19793722, 1)
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_3vyb7"]
 emission_shape = 2
@@ -41,27 +32,10 @@ shape = SubResource("CapsuleShape3D_g2els")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7334174, 0)
 fov = 95.0
 
-[node name="Path3D" type="Path3D" parent="Camera3D" unique_id=800361349]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07775414, -0.05957532, 0)
-curve = SubResource("Curve3D_dqkch")
+[node name="WirePositionEnd" type="Node3D" parent="Camera3D" unique_id=1027174839]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3951565, -0.58495456, -0.35313085)
 
-[node name="CSGPolygon3D" type="CSGPolygon3D" parent="Camera3D/Path3D" unique_id=325026877]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.76, 0)
-polygon = PackedVector2Array(0, 0, 0, 0.03, 0.03, 0.03, 0.03, 0)
-mode = 2
-path_node = NodePath("..")
-path_interval_type = 0
-path_interval = 1.0
-path_simplify_angle = 0.0
-path_rotation = 1
-path_rotation_accurate = false
-path_local = false
-path_continuous_u = true
-path_u_distance = 1.0
-path_joined = false
-material = SubResource("StandardMaterial3D_qlg0r")
-
-[node name="SlideParticles" type="GPUParticles3D" parent="." unique_id=1246928734]
+[node name="VelocityParticles" type="GPUParticles3D" parent="." unique_id=1246928734]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.36338592, -0.07280946)
 lifetime = 0.1
 explosiveness = 0.23
@@ -82,11 +56,18 @@ target_position = Vector3(-0.8, 0, 0)
 [node name="RayCast3DRight" type="RayCast3D" parent="." unique_id=1929543924]
 target_position = Vector3(0.8, 0, 0)
 
-[node name="DeathCollision" type="Area3D" parent="." unique_id=438515973]
+[node name="DeathCollision" type="Area3D" parent="." unique_id=1597688441]
 collision_layer = 2
 collision_mask = 2
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="DeathCollision" unique_id=463793344]
+shape = SubResource("CapsuleShape3D_g2els")
+
+[node name="CheckpointCollision" type="Area3D" parent="." unique_id=865396357]
+collision_layer = 4
+collision_mask = 4
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CheckpointCollision" unique_id=1362970158]
 shape = SubResource("CapsuleShape3D_g2els")
 
 [node name="AudioManager" type="Node" parent="." unique_id=1484841172]
@@ -98,3 +79,9 @@ autoplay = true
 
 [node name="SlideNoise" type="AudioStreamPlayer" parent="AudioManager" unique_id=808364780]
 stream = ExtResource("2_g2els")
+
+[node name="HookNoiseLoop" type="AudioStreamPlayer" parent="AudioManager" unique_id=1450164367]
+stream = ExtResource("5_qlg0r")
+volume_db = 1.0
+
+[connection signal="area_entered" from="CheckpointCollision" to="." method="_on_checkpoint"]

@@ -3,9 +3,11 @@
 [ext_resource type="Script" uid="uid://bsp7uh3cww200" path="res://scripts/game.gd" id="1_lnu2h"]
 [ext_resource type="PackedScene" uid="uid://5q7xnu2ye2au" path="res://scenes/player.tscn" id="1_yqjtg"]
 [ext_resource type="PackedScene" uid="uid://ck4qvevkjjpnb" path="res://scenes/pause_screen.tscn" id="2_lbhrr"]
-[ext_resource type="PackedScene" uid="uid://bx0vxfd8rlbjy" path="res://scenes/test_gym_construct.tscn" id="3_lnu2h"]
 [ext_resource type="PackedScene" uid="uid://w33qk4ccmftp" path="res://scenes/grapple.tscn" id="3_p57ef"]
 [ext_resource type="Theme" uid="uid://42qyuvb7copb" path="res://assets/pause_ui.tres" id="5_iywne"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_p57ef"]
+size = Vector3(0.02, 0.02, 1)
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_lnu2h"]
 load_path = "res://.godot/imported/cursor.png-224f93d013e0812359a323dac1948615.ctex"
@@ -24,9 +26,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.0307055, 0)
 
 [node name="Grapple" parent="." unique_id=1337583611 instance=ExtResource("3_p57ef")]
 
-[node name="current_level" type="Node" parent="." unique_id=430740197]
+[node name="Line" type="MeshInstance3D" parent="." unique_id=1428121614]
+visible = false
+mesh = SubResource("BoxMesh_p57ef")
 
-[node name="test_gym_construct" parent="current_level" unique_id=76034593 instance=ExtResource("3_lnu2h")]
+[node name="current_level" type="Node" parent="." unique_id=430740197]
 
 [node name="Pause" parent="." unique_id=1088492278 instance=ExtResource("2_lbhrr")]
 visible = false
@@ -46,7 +50,15 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="Speedometer" type="Label" parent="BottomLeftHUD" unique_id=1858740289]
+[node name="VBoxContainer" type="VBoxContainer" parent="BottomLeftHUD" unique_id=486951900]
+layout_mode = 2
+
+[node name="CheckpointAnnouncement" type="Label" parent="BottomLeftHUD/VBoxContainer" unique_id=64089459]
+layout_mode = 2
+theme = ExtResource("5_iywne")
+text = "Checkpoint reached."
+
+[node name="Speedometer" type="Label" parent="BottomLeftHUD/VBoxContainer" unique_id=1858740289]
 layout_mode = 2
 theme = ExtResource("5_iywne")
 

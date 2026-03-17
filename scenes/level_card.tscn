@@ -1,0 +1,71 @@
+[gd_scene format=3 uid="uid://eklgfy4snsee"]
+
+[ext_resource type="Script" uid="uid://dfj4rj0due26t" path="res://scripts/level_select.gd" id="1_dw25j"]
+[ext_resource type="Theme" uid="uid://42qyuvb7copb" path="res://assets/pause_ui.tres" id="2_e8t4b"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e8t4b"]
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(0.22352941, 0.22352941, 0.22352941, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.13725491, 0.13725491, 0.13725491, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dw25j"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fbx1x"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o84w8"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[node name="LevelCard" type="Control" unique_id=818107600]
+custom_minimum_size = Vector2(300, 400)
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_dw25j")
+
+[node name="Panel" type="Panel" parent="." unique_id=1928014788]
+custom_minimum_size = Vector2(300, 400)
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_e8t4b")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=101872720]
+custom_minimum_size = Vector2(300, 400)
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=673340176]
+layout_mode = 2
+
+[node name="LevelThumbnail" type="TextureRect" parent="MarginContainer/VBoxContainer" unique_id=1675923498]
+custom_minimum_size = Vector2(290, 215)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 6
+
+[node name="LevelTitle" type="Label" parent="MarginContainer/VBoxContainer" unique_id=910554001]
+layout_mode = 2
+theme = ExtResource("2_e8t4b")
+horizontal_alignment = 1
+
+[node name="StartButton" type="Button" parent="." unique_id=188172641]
+custom_minimum_size = Vector2(300, 400)
+layout_mode = 1
+offset_right = 8.0
+offset_bottom = 8.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_dw25j")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_fbx1x")
+theme_override_styles/hover = SubResource("StyleBoxFlat_o84w8")
