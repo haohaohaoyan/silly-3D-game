@@ -117,9 +117,8 @@ grow_vertical = 2
 horizontal_scroll_mode = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="LevelSelect/ScrollContainer" unique_id=131821805]
-custom_minimum_size = Vector2(0, 648)
+custom_minimum_size = Vector2(1152, 648)
 layout_mode = 2
-size_flags_horizontal = 4
 
 [node name="LevelCard" parent="LevelSelect/ScrollContainer/HBoxContainer" unique_id=818107600 instance=ExtResource("4_mgrm8")]
 layout_mode = 2
@@ -134,7 +133,14 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 levelName = "level 1"
-levelFirstPath = "res://assets/levels/ch1/ch1_1.tscn"
+levelFirstPath = "res://assets/levels/ch1/testmap.tscn"
+levelThumbnail = "res://icon.svg"
+
+[node name="LevelCard3" parent="LevelSelect/ScrollContainer/HBoxContainer" unique_id=91429771 instance=ExtResource("4_mgrm8")]
+layout_mode = 2
+size_flags_vertical = 4
+levelName = "chapter 1 thing"
+levelFirstPath = "res://assets/levels/ch1/ch_1_1.tscn"
 levelThumbnail = "res://icon.svg"
 
 [node name="Button" type="Button" parent="LevelSelect" unique_id=1035142041]

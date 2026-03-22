@@ -2,17 +2,20 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c2o2nff6mxio2"
-path.s3tc="res://.godot/imported/logo.png-e2220799298e3631eb0e245316e0501a.s3tc.ctex"
+uid="uid://cuxx0uamk5mtt"
+path.s3tc="res://.godot/imported/ch1_1_concrete.png-39810c0da2f9d5a880ceec33cbb1409c.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
+generator_parameters={
+"md5": "69b751f397cff101b8ac389d70f673e3"
+}
 
 [deps]
 
-source_file="res://assets/logo.png"
-dest_files=["res://.godot/imported/logo.png-e2220799298e3631eb0e245316e0501a.s3tc.ctex"]
+source_file="res://assets/levels/ch1/ch1_1_concrete.png"
+dest_files=["res://.godot/imported/ch1_1_concrete.png-39810c0da2f9d5a880ceec33cbb1409c.s3tc.ctex"]
 
 [params]
 

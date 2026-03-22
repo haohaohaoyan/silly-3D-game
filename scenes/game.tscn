@@ -6,7 +6,11 @@
 [ext_resource type="PackedScene" uid="uid://w33qk4ccmftp" path="res://scenes/grapple.tscn" id="3_p57ef"]
 [ext_resource type="Theme" uid="uid://42qyuvb7copb" path="res://assets/pause_ui.tres" id="5_iywne"]
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_iywne"]
+albedo_color = Color(0.3515629, 0.3515629, 0.35156286, 1)
+
 [sub_resource type="BoxMesh" id="BoxMesh_p57ef"]
+material = SubResource("StandardMaterial3D_iywne")
 size = Vector3(0.02, 0.02, 1)
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_lnu2h"]
@@ -37,28 +41,35 @@ visible = false
 z_index = 4096
 layout_mode = 1
 
-[node name="BottomLeftHUD" type="MarginContainer" parent="." unique_id=653862704]
+[node name="BottomHUD" type="MarginContainer" parent="." unique_id=653862704]
 layout_mode = 1
-anchors_preset = 2
+anchors_preset = 12
 anchor_top = 1.0
+anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -40.0
-offset_right = 40.0
+offset_top = -70.0
+grow_horizontal = 2
 grow_vertical = 0
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="VBoxContainer" type="VBoxContainer" parent="BottomLeftHUD" unique_id=486951900]
+[node name="ToolTip" type="Label" parent="BottomHUD" unique_id=1672229586]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("5_iywne")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="BottomHUD" unique_id=486951900]
 layout_mode = 2
 
-[node name="CheckpointAnnouncement" type="Label" parent="BottomLeftHUD/VBoxContainer" unique_id=64089459]
+[node name="CheckpointAnnouncement" type="Label" parent="BottomHUD/VBoxContainer" unique_id=64089459]
 layout_mode = 2
 theme = ExtResource("5_iywne")
 text = "Checkpoint reached."
 
-[node name="Speedometer" type="Label" parent="BottomLeftHUD/VBoxContainer" unique_id=1858740289]
+[node name="Speedometer" type="Label" parent="BottomHUD/VBoxContainer" unique_id=1858740289]
 layout_mode = 2
 theme = ExtResource("5_iywne")
 

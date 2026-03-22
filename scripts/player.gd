@@ -94,11 +94,7 @@ func _physics_process(_delta):
 	if !is_on_floor() and !grapple.is_hooked and slide_state == false:
 		velocity.y = move_toward(velocity.y, GRAVITY_MAX, GRAVITY_SPEED)
 		
-	# Checkpoints are checked asynchronously
-	
-	# Check for death-related things
-	if len($DeathCollision.get_overlapping_areas()) > 0 or len($DeathCollision.get_overlapping_bodies()) > 0:
-		death()
+	# Checkpoints, death are checked asynchronously
 	
 	# set last movement (fancy dict)
 	if is_on_wall():
@@ -143,6 +139,10 @@ func _physics_process(_delta):
 
 	move_and_slide()
 	
+	# update some globals
+	Global.player_pos = global_position
+	Global.player_velocity = velocity
+	
 func update_camera():
 	var movement = Input.get_last_mouse_velocity() # local var nyehehehe
 	rotate_y(-movement.x * SENSITIVITY)
@@ -177,12 +177,18 @@ func grapple_control():
 	else:
 		line.visible = false
 		
-func death():
-	global_position = respawn_checkpoint
-	grapple.global_position = global_position
-	grapple.is_hooked = false
-	grapple.visible = false
-	velocity = Vector3(0,0,0)
+func death(_really_useless_value_that_they_put_here_idk_why):
+	if is_physics_processing():
+		set_physics_process(false)
+		get_tree().paused = false
+		await Global.screen_transition("wipe_on")
+		global_position = respawn_checkpoint
+		grapple.global_position = global_position
+		grapple.is_hooked = false
+		grapple.visible = false
+		velocity = Vector3(0,0,0)
+		set_physics_process(true)
+		await Global.screen_transition("wipe_off")
 		
 func _on_checkpoint(area) -> void:
 	if respawn_checkpoint != area.global_position:

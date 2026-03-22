@@ -17,7 +17,11 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-Options="*uid://l1gr38akukjx"
+Global="*uid://l1gr38akukjx"
+
+[display]
+
+window/stretch/mode="canvas_items"
 
 [editor_plugins]
 

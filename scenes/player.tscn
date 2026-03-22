@@ -15,7 +15,8 @@ gravity = Vector3(0, 0, 0)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3vyb7"]
 transparency = 1
-albedo_color = Color(1, 1, 1, 0.19215687)
+shading_mode = 0
+albedo_color = Color(1, 1, 1, 0.10980392)
 
 [sub_resource type="BoxMesh" id="BoxMesh_g2els"]
 material = SubResource("StandardMaterial3D_3vyb7")
@@ -84,4 +85,6 @@ stream = ExtResource("2_g2els")
 stream = ExtResource("5_qlg0r")
 volume_db = 1.0
 
+[connection signal="area_entered" from="DeathCollision" to="." method="death"]
+[connection signal="body_entered" from="DeathCollision" to="." method="death"]
 [connection signal="area_entered" from="CheckpointCollision" to="." method="_on_checkpoint"]
