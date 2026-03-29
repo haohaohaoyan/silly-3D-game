@@ -1,10 +1,10 @@
 [gd_scene format=3 uid="uid://5q7xnu2ye2au"]
 
 [ext_resource type="Script" uid="uid://bamgersy2hnrm" path="res://scripts/player.gd" id="1_3vyb7"]
-[ext_resource type="AudioStream" uid="uid://bdowavd4q46mn" path="res://assets/audio/slide_loop.wav" id="2_g2els"]
 [ext_resource type="Script" uid="uid://1o5xpwj5ceny" path="res://scripts/audio_manager.gd" id="2_qhqgy"]
-[ext_resource type="AudioStream" uid="uid://dh6ybeyddogtv" path="res://assets/audio/361053__jorge0000__wind-noise.wav" id="3_dqkch"]
-[ext_resource type="AudioStream" uid="uid://dn4l25h641uym" path="res://assets/audio/hook_loop.wav" id="5_qlg0r"]
+[ext_resource type="AudioStream" uid="uid://8pk026ignjgh" path="res://assets/audio/651541__nsstudios__wind-draft-loop-1.ogg" id="3_qlg0r"]
+[ext_resource type="AudioStream" uid="uid://jairwm7rwrdq" path="res://assets/audio/slide_loop.ogg" id="4_qlg0r"]
+[ext_resource type="AudioStream" uid="uid://0bl7gbhs71su" path="res://assets/audio/hook_loop.ogg" id="5_tuyoq"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_g2els"]
 
@@ -75,14 +75,14 @@ shape = SubResource("CapsuleShape3D_g2els")
 script = ExtResource("2_qhqgy")
 
 [node name="WindNoise" type="AudioStreamPlayer" parent="AudioManager" unique_id=1201799313]
-stream = ExtResource("3_dqkch")
+stream = ExtResource("3_qlg0r")
 autoplay = true
 
 [node name="SlideNoise" type="AudioStreamPlayer" parent="AudioManager" unique_id=808364780]
-stream = ExtResource("2_g2els")
+stream = ExtResource("4_qlg0r")
 
 [node name="HookNoiseLoop" type="AudioStreamPlayer" parent="AudioManager" unique_id=1450164367]
-stream = ExtResource("5_qlg0r")
+stream = ExtResource("5_tuyoq")
 volume_db = 1.0
 
 [connection signal="area_entered" from="DeathCollision" to="." method="death"]

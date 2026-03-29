@@ -9,19 +9,12 @@ func _ready():
 	get_tree().get_root().add_child.call_deferred(load("res://scenes/screenwipe.tscn").instantiate()) # i'm pretty lazy
 	
 func screen_transition(play: String):
-	var screenwipe = get_tree().get_root().get_node("Screenwipe")
-	screenwipe.get_node("AnimationPlayer").play("RESET")
-	screenwipe.get_node("AnimationPlayer").stop()
-	screenwipe.get_node("AnimationPlayer").clear_queue()
-	match play:
-		"wipe_on":
-			screenwipe.visible = true
-			screenwipe.get_node("AnimationPlayer").queue("wipe_on")
-			await screenwipe.get_node("AnimationPlayer").animation_finished
-		"wipe_off":
-			screenwipe.get_node("AnimationPlayer").queue("wipe_off")
-			await screenwipe.get_node("AnimationPlayer").animation_finished
-			screenwipe.visible = false
+	var screenwipe_player = get_tree().get_root().get_node("Screenwipe/AnimationPlayer")
+	screenwipe_player.play("RESET")
+	screenwipe_player.stop()
+	screenwipe_player.clear_queue()
+	screenwipe_player.play(play)
+	await screenwipe_player.animation_finished
 			
 var fade_tween : Tween # for reuse
 func tooltip(_empty, string: String): #empty var because signals default to forcing one down the function's mouth

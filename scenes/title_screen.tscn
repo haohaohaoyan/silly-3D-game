@@ -125,22 +125,22 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 levelName = "Test Gym"
-levelFirstPath = "res://assets/levels/test_gym/test_gym_construct.tscn"
-levelThumbnail = "res://assets/levels/test_gym/test_gym_thumbnail.png"
+levelFirstPath = "res://levels/test_gym/test_gym_construct.tscn"
+levelThumbnail = "res://levels/test_gym/test_gym_thumbnail.jpg"
 
 [node name="LevelCard2" parent="LevelSelect/ScrollContainer/HBoxContainer" unique_id=512828495 instance=ExtResource("4_mgrm8")]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 levelName = "level 1"
-levelFirstPath = "res://assets/levels/ch1/testmap.tscn"
+levelFirstPath = "res://levels/ch1/testmap.tscn"
 levelThumbnail = "res://icon.svg"
 
 [node name="LevelCard3" parent="LevelSelect/ScrollContainer/HBoxContainer" unique_id=91429771 instance=ExtResource("4_mgrm8")]
 layout_mode = 2
 size_flags_vertical = 4
 levelName = "chapter 1 thing"
-levelFirstPath = "res://assets/levels/ch1/ch_1_1.tscn"
+levelFirstPath = "res://levels/ch1/ch_1_1.tscn"
 levelThumbnail = "res://icon.svg"
 
 [node name="Button" type="Button" parent="LevelSelect" unique_id=1035142041]

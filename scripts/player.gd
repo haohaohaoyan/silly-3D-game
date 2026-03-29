@@ -8,8 +8,8 @@ const SENSITIVITY = 0.00007 # what in the name of
 const AIR_ACCEL = 0.2
 const AIR_FRICTION = 0.1
 
-var slide_state : bool
-var last_movement_state: Dictionary
+var state : String
+var last_state : String
 var slide_vector : Vector3
 var air_movement_vector: Vector3 # horizontal only, but y included for compatibility
 var grapple_vector: Vector3
@@ -25,40 +25,58 @@ func _physics_process(_delta):
 	
 	update_camera()
 	
-	# act based on state, then rotate. direction.x is left/right, direction.y is forward/back
-	# it's split based on movement types
-
-	if Input.is_action_pressed("SLIDE") and (is_on_floor() or (is_on_wall() and velocity.length() >= 6)): 
-		slide_state = true
+	# redoing the ENTIRE SYSTEM WITH A STATE MACHINE!!!!!!
+	# decide state
+	# Jump logic is handled within each state
+	if Input.is_action_pressed("SLIDE") and (is_on_floor() or (is_on_wall() and velocity.length() >= 6)):
+		state = "slide"
 	else:
-		slide_state = false
-	
-	if slide_state:
-		if Input.is_action_just_pressed("SLIDE") or !last_movement_state["slide_state"]:
-			if direction_input:
+		if is_on_floor():
+			state = "walk"
+		else:
+			state = "air"
+			
+	grapple_control()
+	if grapple.state == "hooked":
+		state = "hooked"
+		
+	# trigger buffer timer
+	if Input.is_action_just_pressed("JUMP"):
+		$BufferTimer.start()
+		
+	var movement = (transform.basis * direction_input).normalized()
+	# General movement
+	match state:
+		"slide":
+			if Input.is_action_just_pressed("SLIDE") or !("slide" in last_state):
+				if !direction_input:
+					direction_input = Vector3(0,0,-1)
 				if velocity.length() >= SPEED * 1.5:
 					slide_vector = transform.basis * (direction_input * velocity.length())
 				else:
 					slide_vector = (transform.basis * direction_input) * SPEED * 1.5
-			else:
-				if velocity.length() >= SPEED * 1.5:
-					slide_vector = (transform.basis * Vector3(0,0,-1)).normalized() * velocity.length()
+			if get_wall_normal():
+				slide_vector = slide_vector.slide(get_wall_normal()) * Vector3(1, 0.98, 1)
+			velocity.x = movement.x * 0.8 + slide_vector.x
+			velocity.z = movement.z * 0.8 + slide_vector.z
+			velocity += -get_wall_normal() * 0.6 # not too sticky so you can look away and bounce off
+			# jump
+			if !$BufferTimer.is_stopped():
+				# Floor priority first in case you're touching both a floor and a wall
+				var converted_slide_vector = (slide_vector.normalized() * 8)
+				if is_on_floor():
+					velocity += (Vector3(converted_slide_vector.x, slide_vector.y + 12, converted_slide_vector.z))
 				else:
-					slide_vector = (transform.basis * Vector3(0,0,-1)).normalized() * SPEED * 1.5
-		if get_wall_normal():
-			slide_vector = slide_vector.slide(get_wall_normal()) * Vector3(1, 0.98, 1)
-		var movement = slide_vector + (transform.basis * direction_input).normalized() * 0.8
-		velocity.x = movement.x
-		velocity.z = movement.z
-		velocity += -get_wall_normal() * 0.6 # not too sticky so you can look away and bounce off
-	else:
-		# reset slide vector 
-		var movement = (transform.basis * direction_input).normalized() * SPEED
-		if is_on_floor() and !grapple.is_hooked:
+					velocity += ((get_wall_normal() * 16) + (Vector3(converted_slide_vector.x, slide_vector.y + 8, converted_slide_vector.z)))
+				$BufferTimer.stop()
+		"walk":
 			air_movement_vector = Vector3(0,0,0)
-			velocity.x = movement.x
-			velocity.z = movement.z
-		else:
+			velocity.x = movement.x * SPEED
+			velocity.z = movement.z * SPEED
+			if !$BufferTimer.is_stopped():
+				velocity.y += 16 
+				$BufferTimer.stop()
+		"air":
 			if movement:
 				# change movement, lerp, add back to split up
 				velocity -= air_movement_vector
@@ -71,42 +89,26 @@ func _physics_process(_delta):
 			else:
 				velocity.x = move_toward(velocity.x, 0, AIR_FRICTION)
 				velocity.z = move_toward(velocity.z, 0, AIR_FRICTION)
-	
-	# Jump
-	# trigger buffer timer
-	if Input.is_action_just_pressed("JUMP"):
-		$BufferTimer.start()
-	
-	if !$BufferTimer.is_stopped():
-		if slide_state:
-			# Floor priority first in case you're touching both a floor and a wall
-			var converted_slide_vector = (slide_vector.normalized() * 8)
-			if is_on_floor():
-				velocity += (Vector3(converted_slide_vector.x, slide_vector.y + 12, converted_slide_vector.z))
-			else:
-				velocity += ((get_wall_normal() * 16) + (Vector3(converted_slide_vector.x, slide_vector.y + 8, converted_slide_vector.z)))
-			$BufferTimer.stop()
-		elif is_on_floor():
-			velocity.y += 16 
-			$BufferTimer.stop()
+				
+			# gravity
+			velocity.y = move_toward(velocity.y, GRAVITY_MAX, GRAVITY_SPEED)
 			
-	# Gravity
-	if !is_on_floor() and !grapple.is_hooked and slide_state == false:
-		velocity.y = move_toward(velocity.y, GRAVITY_MAX, GRAVITY_SPEED)
-		
+			# useless lil walljump
+			if !$BufferTimer.is_stopped() and is_on_wall():
+				velocity += get_wall_normal() * 3 + Vector3(0,8,0)
+				$BufferTimer.stop()
+		"hooked":
+			if velocity.length() >= grapple_vector.length():
+				velocity -= grapple_vector
+			grapple_vector = (grapple.global_position - global_position).normalized() * 30
+			slide_vector = grapple_vector
+			velocity += grapple_vector
+			
 	# Checkpoints, death are checked asynchronously
 	
-	# set last movement (fancy dict)
-	if is_on_wall():
-		last_movement_state = {"slide_state": true, "wall_normal": get_wall_normal()}
-	else:
-		if is_on_floor():
-			last_movement_state = {"slide_state": slide_state, "wall_normal": null}
-		else:
-			last_movement_state["slide_state"] = false
+	# set last movement
+	last_state = state
 		
-	# after movement, process the grapple thingamabobber
-	grapple_control()
 	# Aesthetic stuff
 	
 	# oooo velocity particles
@@ -121,9 +123,9 @@ func _physics_process(_delta):
 	
 	# camera down when slide, tilt cam if on wall or sliding in certain direction
 	# height is broken until i change some stuff
-	$Camera3D.rotation.z = lerp($Camera3D.rotation.z, -Input.get_axis("STRAFELEFT", "STRAFERIGHT") * (0.03 + (int(slide_state) * 0.07) * int(is_on_floor())), 0.5)
+	$Camera3D.rotation.z = lerp($Camera3D.rotation.z, -Input.get_axis("STRAFELEFT", "STRAFERIGHT") * (0.03 + (int("slide" in state) * 0.07) * int(is_on_floor())), 0.5)
 	
-	if slide_state:
+	if "slide" in state:
 		# $CollisionShape3D.shape.height = 1
 		if is_on_floor():
 			$Camera3D.position.y = lerp($Camera3D.position.y, -0.3, 0.5)
@@ -134,6 +136,13 @@ func _physics_process(_delta):
 		# $CollisionShape3D.shape.height = 2
 		$Camera3D.position.y = lerp($Camera3D.position.y, 0.733, 0.5)
 	
+	# Grapple rope
+	if grapple.visible:
+		line.mesh.size.z = abs(($Camera3D/WirePositionEnd.global_position - grapple.get_node("WirePositionEnd").global_position).length())
+		line.global_position = lerp($Camera3D/WirePositionEnd.global_position, grapple.get_node("WirePositionEnd").global_position, 0.5)
+		line.look_at(grapple.get_node("WirePositionEnd").global_position)
+	line.visible = grapple.visible
+	
 	# Audio
 	$AudioManager.audio_loop()
 
@@ -142,7 +151,7 @@ func _physics_process(_delta):
 	# update some globals
 	Global.player_pos = global_position
 	Global.player_velocity = velocity
-	
+
 func update_camera():
 	var movement = Input.get_last_mouse_velocity() # local var nyehehehe
 	rotate_y(-movement.x * SENSITIVITY)
@@ -151,32 +160,18 @@ func update_camera():
 func grapple_control():
 	# check for throw grapple command
 	if Input.is_action_just_pressed("HOOK"):
-		grapple.is_hooked = false
-		if !grapple.visible:
+		if grapple.state == "disabled":
+			grapple.state = "active"
 			grapple_vector = Vector3(0,0,0)
-			grapple.visible = true
 			grapple.global_rotation = $Camera3D.global_rotation
 			grapple.global_position = global_position + Vector3(0,0.733,0) + (Vector3(0,0,0) * $Camera3D.global_transform.basis)
 			grapple.velocity = $Camera3D.global_transform.basis * Vector3(0,0,-128)
 			line.visible = true
 		else:
-			grapple.visible = false
-		
-	if grapple.visible:
-		line.mesh.size.z = abs(($Camera3D/WirePositionEnd.global_position - grapple.get_node("WirePositionEnd").global_position).length())
-		line.global_position = lerp($Camera3D/WirePositionEnd.global_position, grapple.get_node("WirePositionEnd").global_position, 0.5)
-		line.look_at(grapple.get_node("WirePositionEnd").global_position)
-		if grapple.is_hooked:
-			if velocity.length() >= grapple_vector.length():
-				velocity -= grapple_vector
-			grapple_vector = (grapple.global_position - global_position).normalized() * 30
-			slide_vector = grapple_vector
-			velocity += grapple_vector
-		if grapple.global_position.distance_to(global_position) >= 60:
 			grapple.die()
-	else:
-		line.visible = false
-		
+	if grapple.global_position.distance_to(global_position) >= 60:
+		grapple.die()
+	
 func death(_really_useless_value_that_they_put_here_idk_why):
 	if is_physics_processing():
 		set_physics_process(false)
@@ -184,8 +179,7 @@ func death(_really_useless_value_that_they_put_here_idk_why):
 		await Global.screen_transition("wipe_on")
 		global_position = respawn_checkpoint
 		grapple.global_position = global_position
-		grapple.is_hooked = false
-		grapple.visible = false
+		grapple.state = "disabled"
 		velocity = Vector3(0,0,0)
 		set_physics_process(true)
 		await Global.screen_transition("wipe_off")
