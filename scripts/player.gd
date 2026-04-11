@@ -5,7 +5,7 @@ const SPEED = 8
 const GRAVITY_MAX = -32
 const GRAVITY_SPEED = 0.5
 const SENSITIVITY = 0.00007 # what in the name of
-const AIR_ACCEL = 0.2
+const AIR_ACCEL = 0.5
 const AIR_FRICTION = 0.1
 
 var state : String
@@ -29,6 +29,7 @@ func _physics_process(_delta):
 	# decide state
 	# Jump logic is handled within each state
 	if Input.is_action_pressed("SLIDE") and (is_on_floor() or (is_on_wall() and velocity.length() >= 6)):
+		print("ioaj;dsimc")
 		state = "slide"
 	else:
 		if is_on_floor():
@@ -60,49 +61,51 @@ func _physics_process(_delta):
 			velocity.x = movement.x * 0.8 + slide_vector.x
 			velocity.z = movement.z * 0.8 + slide_vector.z
 			velocity += -get_wall_normal() * 0.6 # not too sticky so you can look away and bounce off
-			# jump
-			if !$BufferTimer.is_stopped():
-				# Floor priority first in case you're touching both a floor and a wall
-				var converted_slide_vector = (slide_vector.normalized() * 8)
-				if is_on_floor():
-					velocity += (Vector3(converted_slide_vector.x, slide_vector.y + 12, converted_slide_vector.z))
-				else:
-					velocity += ((get_wall_normal() * 16) + (Vector3(converted_slide_vector.x, slide_vector.y + 8, converted_slide_vector.z)))
-				$BufferTimer.stop()
 		"walk":
 			air_movement_vector = Vector3(0,0,0)
 			velocity.x = movement.x * SPEED
 			velocity.z = movement.z * SPEED
-			if !$BufferTimer.is_stopped():
-				velocity.y += 16 
-				$BufferTimer.stop()
 		"air":
 			if movement:
-				# change movement, lerp, add back to split up
-				velocity -= air_movement_vector
-				if Vector2(velocity.x, velocity.z).length() >= SPEED:
-					air_movement_vector = (transform.basis * Vector3(0,0,direction_input.x * SPEED))
+				if Vector2(velocity.x, velocity.z).length() >= SPEED * 2:
+					# makes sure that you can't really accelerate (or decelerate, but that's a side effect)
+					var new_velocity = (velocity + (movement * 0.7)).normalized() * (velocity.length())
+					velocity.x = new_velocity.x
+					velocity.z = new_velocity.z
 				else:
-					air_movement_vector.x = move_toward(air_movement_vector.x, movement.x, AIR_ACCEL)
-					air_movement_vector.z = move_toward(air_movement_vector.z, movement.z, AIR_ACCEL)
-				velocity += air_movement_vector
+					# change movement, lerp, add back to split up
+					velocity -= air_movement_vector
+					air_movement_vector.x = move_toward(air_movement_vector.x, movement.x * (SPEED * 0.5), AIR_ACCEL)
+					air_movement_vector.z = move_toward(air_movement_vector.z, movement.z * (SPEED * 0.5), AIR_ACCEL)
+					velocity += air_movement_vector
 			else:
 				velocity.x = move_toward(velocity.x, 0, AIR_FRICTION)
 				velocity.z = move_toward(velocity.z, 0, AIR_FRICTION)
 				
 			# gravity
 			velocity.y = move_toward(velocity.y, GRAVITY_MAX, GRAVITY_SPEED)
-			
-			# useless lil walljump
-			if !$BufferTimer.is_stopped() and is_on_wall():
-				velocity += get_wall_normal() * 3 + Vector3(0,8,0)
-				$BufferTimer.stop()
 		"hooked":
 			if velocity.length() >= grapple_vector.length():
 				velocity -= grapple_vector
 			grapple_vector = (grapple.global_position - global_position).normalized() * 30
 			slide_vector = grapple_vector
 			velocity += grapple_vector
+	
+	# jump
+	if !$BufferTimer.is_stopped():
+		if state == "slide":
+			# Floor priority first in case you're touching both a floor and a wall
+			var converted_slide_vector = (slide_vector.normalized() * 8)
+			if is_on_floor():
+				velocity += (Vector3(converted_slide_vector.x, slide_vector.y + 12, converted_slide_vector.z))
+			else:
+				velocity += ((get_wall_normal() * 16) + (Vector3(converted_slide_vector.x, slide_vector.y + 8, converted_slide_vector.z)))
+		elif state == "walk":
+			velocity.y += 16 
+		elif state == "air" and is_on_wall():
+			velocity += get_wall_normal() * 3 + Vector3(0,8,0)
+		$BufferTimer.stop()
+			
 			
 	# Checkpoints, death are checked asynchronously
 	
@@ -169,7 +172,7 @@ func grapple_control():
 			line.visible = true
 		else:
 			grapple.die()
-	if grapple.global_position.distance_to(global_position) >= 60:
+	if grapple.global_position.distance_to(global_position) >= 30:
 		grapple.die()
 	
 func death(_really_useless_value_that_they_put_here_idk_why):

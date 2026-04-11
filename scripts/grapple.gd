@@ -17,7 +17,7 @@ func _physics_process(_delta):
 				state = "disabled"
 		"disabled":
 			if visible:
-				global_position -= (global_position - Global.player_pos).normalized()
+				global_position -= (global_position - Global.player_pos).normalized() * 2
 				if (len($RemoveCheck.get_overlapping_areas()) != 0 or len($RemoveCheck.get_overlapping_bodies()) != 0):
 					visible = false
 func die():
