@@ -29,7 +29,6 @@ func _physics_process(_delta):
 	# decide state
 	# Jump logic is handled within each state
 	if Input.is_action_pressed("SLIDE") and (is_on_floor() or (is_on_wall() and velocity.length() >= 6)):
-		print("ioaj;dsimc")
 		state = "slide"
 	else:
 		if is_on_floor():
@@ -49,7 +48,7 @@ func _physics_process(_delta):
 	# General movement
 	match state:
 		"slide":
-			if Input.is_action_just_pressed("SLIDE") or !("slide" in last_state):
+			if Input.is_action_just_pressed("SLIDE") or last_state != "slide":
 				if !direction_input:
 					direction_input = Vector3(0,0,-1)
 				if velocity.length() >= SPEED * 1.5:
@@ -58,8 +57,8 @@ func _physics_process(_delta):
 					slide_vector = (transform.basis * direction_input) * SPEED * 1.5
 			if get_wall_normal():
 				slide_vector = slide_vector.slide(get_wall_normal()) * Vector3(1, 0.98, 1)
-			velocity.x = movement.x * 0.8 + slide_vector.x
-			velocity.z = movement.z * 0.8 + slide_vector.z
+			velocity.x = (movement.x * 0.8) + slide_vector.x
+			velocity.z = (movement.z * 0.8) + slide_vector.z
 			velocity += -get_wall_normal() * 0.6 # not too sticky so you can look away and bounce off
 		"walk":
 			air_movement_vector = Vector3(0,0,0)
@@ -90,7 +89,6 @@ func _physics_process(_delta):
 			grapple_vector = (grapple.global_position - global_position).normalized() * 30
 			slide_vector = grapple_vector
 			velocity += grapple_vector
-	
 	# jump
 	if !$BufferTimer.is_stopped():
 		if state == "slide":
@@ -154,6 +152,7 @@ func _physics_process(_delta):
 	# update some globals
 	Global.player_pos = global_position
 	Global.player_velocity = velocity
+	Global.player_state = state
 
 func update_camera():
 	var movement = Input.get_last_mouse_velocity() # local var nyehehehe

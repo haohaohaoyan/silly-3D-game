@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://dk1si4n2uy5ox"
+path="res://.godot/imported/651541__nsstudios__wind-draft-loop-1 (1).wav-aed437648da92b7e003250778b10b714.sample"
+
+[deps]
+
+source_file="res://assets/audio/651541__nsstudios__wind-draft-loop-1 (1).wav"
+dest_files=["res://.godot/imported/651541__nsstudios__wind-draft-loop-1 (1).wav-aed437648da92b7e003250778b10b714.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

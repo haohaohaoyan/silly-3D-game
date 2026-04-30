@@ -4,6 +4,7 @@ var sfx_volume : float = 1
 var fov_base : float = 95
 var player_pos : Vector3 = Vector3(0,0,0)
 var player_velocity : Vector3 = Vector3(0,0,0)
+var player_state : String = ""
 
 func _ready():
 	get_tree().get_root().add_child.call_deferred(load("res://scenes/screenwipe.tscn").instantiate()) # i'm pretty lazy
