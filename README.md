@@ -4,6 +4,12 @@ project for hack club flavortown
 i'm planning on some portal-type exploration and titanfall 2/ultrakill style movement
 it's not finished yet, but you can check out what's already available in releases.
 
+# CONTROLS (because I didn't include a full tutorial):
+- WASD and mouse for movement
+- Hold shift to slide (slide on walls if you're touching one)
+- Space to jump
+- R for hook
+
 ## movement:
 - regular sliding (you can't change direction but you accelerate and preserve speed)
 - wall-sliding and walljumping for more verticality and movement options (and more SPEED)
