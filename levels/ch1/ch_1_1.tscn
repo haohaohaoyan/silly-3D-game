@@ -161,18 +161,18 @@ fog_density = 1.0
 fog_sky_affect = 0.0
 fog_depth_end = 300.0
 
-[node name="ch1_1" unique_id=1806759928 instance=ExtResource("1_3sju0")]
+[node name="ch1_1" unique_id=807820332 instance=ExtResource("1_3sju0")]
 script = SubResource("GDScript_iynbj")
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Landscape" parent_id_path=PackedInt32Array(1558689204) index="0" unique_id=422450360]
+[node name="StaticBody3D" type="StaticBody3D" parent="Landscape" parent_id_path=PackedInt32Array(1571691653) index="0" unique_id=422450360]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Landscape/StaticBody3D" index="0" unique_id=180778291]
 shape = SubResource("ConcavePolygonShape3D_wrtw6")
 
-[node name="TreeMesh" parent="." index="1" unique_id=828499266]
+[node name="TreeMesh" parent="." index="1" unique_id=68536828]
 visible = false
 
-[node name="TreeTrunk" parent="." index="2" unique_id=855002868]
+[node name="TreeTrunk" parent="." index="2" unique_id=185468194]
 visible = false
 
 [node name="SpawnPlayer" type="Node3D" parent="." index="3" unique_id=409735939]
@@ -189,12 +189,12 @@ draw_pass_1 = SubResource("CapsuleMesh_rlpll")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -55.436447, 8.643379, 36.109264)
 size = Vector3(17.528194, 8.0798, 5)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Cube_002" parent_id_path=PackedInt32Array(1321814755) index="0" unique_id=2094450548]
+[node name="StaticBody3D" type="StaticBody3D" parent="Cube_002" parent_id_path=PackedInt32Array(245375993) index="0" unique_id=2094450548]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Cube_002/StaticBody3D" index="0" unique_id=9054083]
 shape = SubResource("ConcavePolygonShape3D_nlqcl")
 
-[node name="StaticBody3D" type="StaticBody3D" parent="corridor1" parent_id_path=PackedInt32Array(1011127617) index="0" unique_id=954324375]
+[node name="StaticBody3D" type="StaticBody3D" parent="corridor1" parent_id_path=PackedInt32Array(232740249) index="0" unique_id=954324375]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="corridor1/StaticBody3D" index="0" unique_id=156710908]
 shape = SubResource("ConcavePolygonShape3D_johri")
@@ -230,12 +230,12 @@ collision_mask = 2
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 47.10263, 7.044145, -2.7901115)
 shape = SubResource("BoxShape3D_iynbj")
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Cube" parent_id_path=PackedInt32Array(1108163471) index="0" unique_id=1295767930]
+[node name="StaticBody3D" type="StaticBody3D" parent="Cube" parent_id_path=PackedInt32Array(1116909783) index="0" unique_id=1295767930]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Cube/StaticBody3D" index="0" unique_id=1476382226]
 shape = SubResource("ConcavePolygonShape3D_5yspe")
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Cube_003" parent_id_path=PackedInt32Array(224760743) index="0" unique_id=235803342]
+[node name="StaticBody3D" type="StaticBody3D" parent="Cube_003" parent_id_path=PackedInt32Array(350899077) index="0" unique_id=235803342]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Cube_003/StaticBody3D" index="0" unique_id=1180111051]
 shape = SubResource("ConcavePolygonShape3D_du0qc")
